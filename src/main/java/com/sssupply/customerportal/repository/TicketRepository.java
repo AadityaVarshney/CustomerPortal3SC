@@ -27,4 +27,10 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
           AND t.deletedAt IS NULL
     """)
     Page<Ticket> findAllWithFilters(TicketStatus status, TicketPriority priority, UUID projectId, Pageable pageable);
+
+    long countByStatusAndDeletedAtIsNull(TicketStatus status);
+
+    long countByStatusAndResolvedAtAfterAndDeletedAtIsNull(TicketStatus status, java.time.LocalDateTime after);
+
+    long countByStatusAndResolvedAtBetweenAndDeletedAtIsNull(TicketStatus status, java.time.LocalDateTime from, java.time.LocalDateTime to);
 }
