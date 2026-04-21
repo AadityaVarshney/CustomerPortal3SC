@@ -16,6 +16,7 @@ public class WorkspaceResponse {
     private UUID id;
     private String name;
     private String logoUrl;
+    private String slug;
     private String primaryColor;
     private String accentColor;
     private int memberCount;

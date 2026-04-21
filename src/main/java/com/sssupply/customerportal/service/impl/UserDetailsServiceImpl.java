@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail()).password(user.getPassword())
-                .authorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString())))
+                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().toString())))
                 .accountExpired(false).accountLocked(false).credentialsExpired(false)
                 .disabled(!user.isActive()).build();
     }

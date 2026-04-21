@@ -36,9 +36,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public WorkspaceResponse createWorkspace(WorkspaceRequest request) {
+        String baseSlug = request.getName()
+                .toLowerCase()
+                .replaceAll("[^a-z0-9]+", "-")   // non-alphanumeric → hyphen
+                .replaceAll("^-|-$", "");        // trim leading/trailing hyphens
+
+        // Ensure uniqueness — append random suffix if slug already taken
+        String slug = baseSlug;
+        if (workspaceRepository.existsBySlug(slug)) {
+            slug = baseSlug + "-" + UUID.randomUUID().toString().substring(0, 6);
+        }
+
         Workspace workspace = Workspace.builder()
                 .name(request.getName())
+                .slug(slug)                       // ← was missing
                 .build();
+
         workspace = workspaceRepository.save(workspace);
         return mapToResponse(workspace);
     }
@@ -113,6 +126,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return WorkspaceResponse.builder()
                 .id(workspace.getId())
                 .name(workspace.getName())
+                .slug(workspace.getSlug())
                 .logoUrl(workspace.getLogoUrl())
                 .primaryColor(workspace.getPrimaryColor())
                 .accentColor(workspace.getAccentColor())
